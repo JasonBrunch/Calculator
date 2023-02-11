@@ -1,3 +1,27 @@
+let slot1 = undefined;
+let slot2 = undefined;
+let operatorSlot = undefined;
+
+
+const slot1Butt = document.querySelector("#slot1butt");
+const slot2butt = document.querySelector("#slot2butt");
+const opSlotButt = document.querySelector("#slot3butt");
+
+slot1Butt.addEventListener("click", function(){
+    testFunction();
+})
+
+function testFunction()
+{
+    
+    slot1Butt.innerHTML = "Slot1:" + slot1;
+    slot2butt.innerHTML = "Slot2: " + slot2;
+    opSlotButt.innerHTML = "OpSlot: " + operatorSlot;
+}
+
+
+
+
 
 class CalcButton{
     constructor(type, value){
@@ -6,7 +30,7 @@ class CalcButton{
     }
 
     activateBtn(){
-        console.log("BUTTON ACTIVATED");
+        
         if(this.type == "number")
         {
             this.numberFunction();
@@ -25,18 +49,129 @@ class CalcButton{
         }
     }
     numberFunction(){
-        console.log("Number Function Firing");
+        
+        //IF PREVIOUS NUMBER IS NOT AN OPERATOR//STORE NUMBER IN SLOT
+        
+        if(slot1 == undefined)
+        {
+            
+            slot1 = this.value;
+            console.log("NUMBER FUNCTION - SLOT1 IS undefined - SET TO " + this.value);
+            displayNumber(this.value);
+        }
+        //IF OPERATOR SLOT IS TAKEN DO EQUATION OF SLOT1 NUMBER - OPERATOR - SLOT2 NUMBER = TOTAL
+        else if(slot1 != "undefined")
+        {
+            
+            //CHECK IS OPERATOR EXISTS OR ADDING 2 NUMBERS TOGETHER - OPERATOR DOES NOT EXIST
+            if(operatorSlot == "undefined")
+            {
+                console.log("Slot1 is not undefinde and operator slot is undefined");
+                slot1 = slot1 + this.value;
+                
+                //DISPLAY WHAT THE OPERATOR RETURNS
+                displayNumber(slot1);
+                //STORE IN SLOT 1 AND CLEAR SLOT 2 AND OPERATOR
+                
+            }
+            //OPERATOR DOES EXIST
+            else if(operatorSlot != "undefined")
+            {
+          
+                
+                slot2 = this.value;
+                let displayString = slot1 + operatorSlot + slot2;
+                displayNumber(displayString);
+            }
+        }
     }
+    
     operatorFunction(){
-        console.log("Operator Function Firing");
+    
+        //IF OPERATOR SLOT TAKEN DO NOTHING
+        if(operatorSlot != undefined)
+        {
+            return;
+        }
+        if(operatorSlot == undefined)
+        {
+            operatorSlot = this.value;
+            let specialDisplayString = slot1 + this.value;
+            displayNumber(specialDisplayString);
+            return;
+        }
+
+
+
+
     }
     clearFunction(){
         console.log("ClearFunction Firing");
+        //CLEAR SLOT 1, 2 AND OPERATOR SLOT
+        slot1 = undefined;
+        slot2 = undefined;
+        operatorSlot = undefined;
+        displayNumber("");
+        
     }
     equalFunction(){
         console.log("Equal Function Firing");
+        if(slot1 != undefined && slot2 != undefined && operatorSlot != undefined)
+        {
+            console.log("EQUAL FUNCTION OPERATING");
+            let operation = operate(operatorSlot,slot1,slot2);
+            slot1 = operation;
+            slot2 = undefined;
+            operatorSlot = undefined;
+            displayNumber(operation);
+
+        }
+        
     }
 }
+function operate(operator, a, b) {
+    a = Number(a)
+    b = Number(b)
+    switch (operator) {
+      case '+':
+      
+        return add(a, b)
+      case '−':
+        return substract(a, b)
+      case '×':
+        return multiply(a, b)
+      case '÷':
+        if (b === 0) return null
+        else return divide(a, b)
+      default:
+        return null
+    }
+}
+function add(a, b) {
+    return a + b
+  }
+  
+  function substract(a, b) {
+    return a - b
+  }
+  
+  function multiply(a, b) {
+    return a * b
+  }
+  
+  function divide(a, b) {
+    return a / b
+  }
+  
+
+
+function displayNumber(stringy){
+    //GET THE DISPLAY AND FILL IT WITH THE NUMBER
+    const screen = document.querySelector("#screen");
+    screen.innerHTML = stringy;
+   
+}
+
 
 const CalcBtnArray = [
     new CalcButton("clearBtn","CLEAR"),
@@ -55,35 +190,31 @@ const CalcBtnArray = [
     new CalcButton("operator","-"),
     new CalcButton("decimal","."),
     new CalcButton("number","0"),
-    new CalcButton("operator","="),
+    new CalcButton("equal","="),
     new CalcButton("operator","+")
 ]
 //SET THE BUTTON TO THE CORESPONDING CLASS
 const btnClear = document.querySelector("#clearBtn");
 btnClear.addEventListener("click", function(){
-    console.log(CalcBtnArray[0].type);
-    console.log(CalcBtnArray[0].value);
+  
     CalcBtnArray[0].activateBtn();
 })
 
 const btnDelete = document.querySelector("#deleteBtn");
 btnDelete.addEventListener("click", function(){
-    console.log(CalcBtnArray[1].type);
-    console.log(CalcBtnArray[1].value);
+ 
     CalcBtnArray[1].activateBtn();
 })
 
 const btn7 = document.querySelector("#btn7");
 btn7.addEventListener("click", function(){
-    console.log(CalcBtnArray[2].type);
-    console.log(CalcBtnArray[2].value);
+  
     CalcBtnArray[2].activateBtn();
 })
 
 const btn8 = document.querySelector("#btn8");
 btn8.addEventListener("click", function(){
-    console.log(CalcBtnArray[3].type);
-    console.log(CalcBtnArray[3].value);
+
     CalcBtnArray[3].activateBtn();
 })
 
@@ -130,8 +261,7 @@ btnX.addEventListener("click", function(){
 
 const btn1 = document.querySelector("#btn1");
 btn1.addEventListener("click", function(){
-    console.log(CalcBtnArray[10].type);
-    console.log(CalcBtnArray[10].value);
+
     CalcBtnArray[10].activateBtn();
 })
 
@@ -183,3 +313,40 @@ btnPlus.addEventListener("click", function(){
     console.log(CalcBtnArray[17].value);
     CalcBtnArray[17].activateBtn();
 })
+
+
+/* STOLLEN CODE
+function add(a, b) {
+  return a + b
+}
+
+function substract(a, b) {
+  return a - b
+}
+
+function multiply(a, b) {
+  return a * b
+}
+
+function divide(a, b) {
+  return a / b
+}
+
+function operate(operator, a, b) {
+  a = Number(a)
+  b = Number(b)
+  switch (operator) {
+    case '+':
+      return add(a, b)
+    case '−':
+      return substract(a, b)
+    case '×':
+      return multiply(a, b)
+    case '÷':
+      if (b === 0) return null
+      else return divide(a, b)
+    default:
+      return null
+  }
+
+  */
